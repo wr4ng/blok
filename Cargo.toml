@@ -1,0 +1,9 @@
+[package]
+name = "blok"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+jiff = "0.2"
+thiserror = "1"
