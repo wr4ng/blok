@@ -13,7 +13,7 @@ pub enum GroupBy {
 #[derive(Parser)]
 #[command(name = "blok", version)]
 pub struct Cli {
-    #[arg(short, long, default_value = "blok.log")]
+    #[arg(short, long, default_value = "blok.log", env = "BLOK_FILE")]
     pub file: PathBuf,
 
     #[command(subcommand)]
