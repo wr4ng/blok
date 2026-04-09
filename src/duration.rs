@@ -64,11 +64,15 @@ pub fn parse_duration(s: &str) -> Result<Duration, String> {
     let mut rest = s;
 
     if let Some(h_pos) = rest.find('h') {
-        hours = rest[..h_pos].parse().map_err(|_| "invalid input before 'h'".to_string())?;
+        hours = rest[..h_pos]
+            .parse()
+            .map_err(|_| "invalid input before 'h'".to_string())?;
         rest = &rest[h_pos + 1..];
     }
     if let Some(m_pos) = rest.find('m') {
-        minutes = rest[..m_pos].parse().map_err(|_| "invalid input before 'm'".to_string())?;
+        minutes = rest[..m_pos]
+            .parse()
+            .map_err(|_| "invalid input before 'm'".to_string())?;
         rest = &rest[m_pos + 1..];
     }
     if !rest.is_empty() {
