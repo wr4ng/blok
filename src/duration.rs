@@ -52,26 +52,29 @@ impl std::iter::Sum for Duration {
 }
 
 /// Parse `XhYm`, `Xh`, or `Ym`. Returns `None` if the string doesn't match.
-pub fn parse_duration(s: &str) -> Option<Duration> {
+pub fn parse_duration(s: &str) -> Result<Duration, String> {
     if s.is_empty() {
-        return None;
+        return Err("empty input".to_string());
+    }
+    if !s.contains('h') && !s.contains('m') {
+        return Err("no 'h' or 's' in input".to_string());
     }
     let mut hours: u64 = 0;
     let mut minutes: u64 = 0;
     let mut rest = s;
 
     if let Some(h_pos) = rest.find('h') {
-        hours = rest[..h_pos].parse().ok()?;
+        hours = rest[..h_pos].parse().map_err(|_| "invalid input before 'h'".to_string())?;
         rest = &rest[h_pos + 1..];
     }
     if let Some(m_pos) = rest.find('m') {
-        minutes = rest[..m_pos].parse().ok()?;
+        minutes = rest[..m_pos].parse().map_err(|_| "invalid input before 'm'".to_string())?;
         rest = &rest[m_pos + 1..];
     }
-    if !rest.is_empty() || (!s.contains('h') && !s.contains('m')) {
-        return None;
+    if !rest.is_empty() {
+        return Err(format!("trailing characters '{rest}'"));
     }
-    Some(Duration::from_parts(hours, minutes))
+    Ok(Duration::from_parts(hours, minutes))
 }
 
 #[cfg(test)]
@@ -89,12 +92,12 @@ mod tests {
 
     #[test]
     fn test_parse_duration() {
-        assert_eq!(parse_duration("3h30m"), Some(Duration::from_parts(3, 30)));
-        assert_eq!(parse_duration("3h"), Some(Duration::from_parts(3, 0)));
-        assert_eq!(parse_duration("45m"), Some(Duration::from_parts(0, 45)));
-        assert_eq!(parse_duration("0m"), Some(Duration::from_parts(0, 0)));
-        assert_eq!(parse_duration("1.5h"), None);
-        assert_eq!(parse_duration("bad"), None);
-        assert_eq!(parse_duration(""), None);
+        assert_eq!(parse_duration("3h30m"), Ok(Duration::from_parts(3, 30)));
+        assert_eq!(parse_duration("3h"), Ok(Duration::from_parts(3, 0)));
+        assert_eq!(parse_duration("45m"), Ok(Duration::from_parts(0, 45)));
+        assert_eq!(parse_duration("0m"), Ok(Duration::from_parts(0, 0)));
+        assert!(matches!(parse_duration("1.5h"), Err(_)));
+        assert!(matches!(parse_duration("bad"), Err(_)));
+        assert!(matches!(parse_duration(""), Err(_)));
     }
 }

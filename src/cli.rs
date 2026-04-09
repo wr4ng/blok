@@ -3,6 +3,8 @@ use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 use jiff::civil::Date;
 
+use crate::duration::{Duration, parse_duration};
+
 #[derive(clap::ValueEnum, Clone)]
 pub enum GroupBy {
     Day,
@@ -27,8 +29,11 @@ pub enum Command {
         /// Date in YYYY-MM-DD format, defaults to today
         #[arg(long, value_parser = parse_date)]
         date: Option<Date>,
-        duration: String,
-        tag: String,
+        /// Duration of the entry, e.g. 2h30m
+        #[arg(value_parser = parse_duration)]
+        duration: Duration,
+        /// Tags separated by ','
+        tags: String,
         note: Option<String>,
     },
     /// Print entries
