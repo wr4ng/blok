@@ -22,6 +22,9 @@ pub struct Cli {
     pub command: Command,
 }
 
+#[derive(Clone)]
+pub struct Tags(pub Vec<String>);
+
 #[derive(Subcommand)]
 pub enum Command {
     /// Add a new entry
@@ -33,7 +36,8 @@ pub enum Command {
         #[arg(value_parser = parse_duration)]
         duration: Duration,
         /// Tags separated by ','
-        tags: String,
+        #[arg(value_parser = parse_tags)]
+        tags: Tags,
         note: Option<String>,
     },
     /// Print entries
@@ -63,4 +67,12 @@ pub enum Command {
 fn parse_date(arg: &str) -> Result<Date, String> {
     arg.parse()
         .map_err(|_| "invalid date, expected YYYY-MM-DD".to_string())
+}
+
+fn parse_tags(arg: &str) -> Result<Tags, String> {
+    let tags = arg.trim();
+    if tags.contains(' ') {
+        return Err("contains space, tags should be separated by comma".to_string());
+    }
+    Ok(Tags(tags.split(',').map(str::to_string).collect()))
 }

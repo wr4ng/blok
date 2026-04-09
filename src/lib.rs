@@ -7,9 +7,20 @@ mod entry;
 
 pub use cli::Cli;
 use cli::Command;
+use entry::Entry;
 
 pub fn run(cli: Cli) {
-    match &cli.command {
+    match cli.command {
+        Command::Add {
+            date,
+            duration,
+            tags,
+            note,
+        } => {
+            let date = date.unwrap_or_else(|| jiff::Zoned::now().date());
+            let entry = Entry::new(date, duration, tags.0, note);
+            println!("{entry}");
+        }
         Command::Print {
             tag: _,
             from: _,
@@ -21,12 +32,6 @@ pub fn run(cli: Cli) {
             to: _,
             tag: _,
             include_empty: _,
-        } => todo!("not implemented"),
-        Command::Add {
-            date: _,
-            duration: _,
-            tag: _,
-            note: _,
         } => todo!("not implemented"),
     }
 }
