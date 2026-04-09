@@ -23,9 +23,9 @@ impl Duration {
 impl std::fmt::Display for Duration {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match (self.hours(), self.mins()) {
-            (0, m) => write!(f, "{}m", m),
-            (h, 0) => write!(f, "{}h", h),
-            (h, m) => write!(f, "{}h{}m", h, m),
+            (0, m) => write!(f, "{m}m"),
+            (h, 0) => write!(f, "{h}h"),
+            (h, m) => write!(f, "{h}h{m}m"),
         }
     }
 }
