@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
+use jiff::civil::Date;
 
 #[derive(clap::ValueEnum, Clone)]
 pub enum GroupBy {
@@ -24,8 +25,8 @@ pub enum Command {
     /// Add a new entry
     Add {
         /// Date in YYYY-MM-DD format, defaults to today
-        #[arg(long)]
-        date: Option<String>,
+        #[arg(long, value_parser = parse_date)]
+        date: Option<Date>,
         duration: String,
         tag: String,
         note: Option<String>,
@@ -34,21 +35,27 @@ pub enum Command {
     Print {
         #[arg(long)]
         tag: Option<String>,
-        #[arg(long)]
-        from: Option<String>,
-        #[arg(long)]
-        to: Option<String>,
+        #[arg(long, value_parser = parse_date)]
+        from: Option<Date>,
+        #[arg(long, value_parser = parse_date)]
+        to: Option<Date>,
     },
     /// Create a table report
     Report {
         #[arg(long, default_value = "day", value_enum)]
         group_by: GroupBy,
-        from: Option<String>,
-        #[arg(long)]
-        to: Option<String>,
+        #[arg(long, value_parser = parse_date)]
+        from: Option<Date>,
+        #[arg(long, value_parser = parse_date)]
+        to: Option<Date>,
         #[arg(long)]
         tag: Option<String>,
         #[arg(long)]
-        include_empty: bool, //TODO: include_between instead?
+        include_empty: bool,
     },
+}
+
+fn parse_date(arg: &str) -> Result<Date, String> {
+    arg.parse()
+        .map_err(|_| "invalid date, expected YYYY-MM-DD".to_string())
 }
