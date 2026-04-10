@@ -50,7 +50,7 @@ impl Entry {
 }
 
 fn split_twice(input: &str) -> Option<(&str, &str, &str)> {
-    let mut parts = input.splitn(2, input);
+    let mut parts = input.splitn(3, " ");
     Some((parts.next()?, parts.next()?, parts.next()?))
 }
 
