@@ -86,7 +86,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_duration_display() {
+    fn duration_display() {
         assert_eq!(Duration::from_parts(3, 30).to_string(), "3h30m");
         assert_eq!(Duration::from_parts(3, 0).to_string(), "3h");
         assert_eq!(Duration::from_parts(0, 45).to_string(), "45m");
@@ -95,7 +95,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_duration() {
+    fn parse_durations() {
         assert_eq!(parse_duration("3h30m"), Ok(Duration::from_parts(3, 30)));
         assert_eq!(parse_duration("3h"), Ok(Duration::from_parts(3, 0)));
         assert_eq!(parse_duration("45m"), Ok(Duration::from_parts(0, 45)));
